@@ -1,0 +1,43 @@
+# Compiled source #
+###################
+build/
+node_modules/
+
+# Django generated files #
+##########################
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+*.egg-info
+*.egg
+*.log
+
+# Local development #
+######################
+myenv/
+.myenv
+.myenv.local
+.myenv.development.local
+.myenv.test.local
+
+# IDE files #
+#############
+.vscode/
+*.idea/
+
+# Test files #
+##############
+coverage/
+
+# Miscellaneous #
+#################
+*.DS_Store
+*.pyo
+*.bak
+*.cache
+*.swp
+*.idea/
+*.pytest_cache/
+
+.env
