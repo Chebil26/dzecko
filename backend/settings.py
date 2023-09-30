@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-)*mgu)w$#v9gcvi^)we)!m++u*zvz&dl54ywne5x*=vhqmgvuo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','https://dlomnkdfvdzwzajbgpxu.supabase.co']
+# ALLOWED_HOSTS = ['127.0.0.1','https://dlomnkdfvdzwzajbgpxu.supabase.co']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,11 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    "corsheaders",
     'rest_framework',
     'main',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,6 +57,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Adjust this to match your frontend URL
+]
+
+
 
 ROOT_URLCONF = 'backend.urls'
 
