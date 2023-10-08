@@ -30,7 +30,7 @@ from django.contrib.auth.models import User
 IMAGE_PLACEHOLDER = 'https://dlomnkdfvdzwzajbgpxu.supabase.co/storage/v1/object/sign/dzecko_image_bucket/gato.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkemVja29faW1hZ2VfYnVja2V0L2dhdG8uanBnIiwiaWF0IjoxNjk1ODI0MzkzLCJleHAiOjE3MjczNjAzOTN9.IIMx1Zg5Vbfniiecnx6SuXAK9UjnonxQcr9LENSEhRM&t=2023-09-27T14%3A19%3A48.828Z'
 
 class Media(models.Model):
-    image_url = models.URLField(null=True, blank=True, default=IMAGE_PLACEHOLDER) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
     description = models.TextField(null=True, blank=True)
     tags = models.CharField(max_length=255, null=True, blank=True)
 
@@ -41,6 +41,7 @@ class Media(models.Model):
 class Color(models.Model):
     name = models.CharField(max_length=50)
     hex_value = models.CharField(max_length=7)  # Assuming you'll store color hex values
+    image = models.ImageField(null= True , blank=True) 
 
     def __str__(self):
         return self.name
@@ -49,6 +50,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
+    image = models.ImageField(null= True , blank=True) 
+    
     
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -66,6 +69,8 @@ class Type(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
     images = models.ManyToManyField(Media, related_name='type_images', blank=True)
+    image = models.ImageField(null= True , blank=True) 
+    
 
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -82,6 +87,8 @@ class Ambiance(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
     images = models.ManyToManyField(Media, related_name='ambiance_images', blank=True)
+    image = models.ImageField(null= True , blank=True) 
+    
 
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -99,6 +106,8 @@ class Revetement(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
     images = models.ManyToManyField(Media, related_name='revetment_images', blank=True)
+    image = models.ImageField(null= True , blank=True) 
+    
 
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -116,6 +125,8 @@ class FurnitureType(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     type = models.ForeignKey(Type, on_delete=models.CASCADE)
     images = models.ManyToManyField(Media, related_name='furniture_type_images', blank=True)
+    image = models.ImageField(null= True , blank=True) 
+    
 
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -136,6 +147,8 @@ class Furniture(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE)
     furniture_type = models.ForeignKey(FurnitureType, on_delete=models.CASCADE)
     images = models.ManyToManyField('Media', related_name='furniture_images', blank=True)
+    image = models.ImageField(null= True , blank=True) 
+    
     color = models.CharField(max_length=50)
     dimensions = models.CharField(max_length=50)
 
@@ -155,6 +168,8 @@ class Option(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     images = models.ManyToManyField(Media, related_name='option_images', blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(null= True , blank=True) 
+    
 
     def save(self, *args, **kwargs):
         if not self.ref:
@@ -172,7 +187,7 @@ class Option(models.Model):
     
 class Question(models.Model):
     question = models.CharField(max_length=500)
-    ref = models.CharField(max_length=50, unique=True, blank=True)
+    ref = models.CharField(max_length=50, unique=True, blank=True)    
 
     def save(self, *args, **kwargs):
         if not self.ref:
