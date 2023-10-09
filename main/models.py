@@ -40,7 +40,7 @@ class Media(models.Model):
     
 class Color(models.Model):
     name = models.CharField(max_length=50)
-    hex_value = models.CharField(max_length=7)  # Assuming you'll store color hex values
+    hex_value = models.CharField(max_length=7)
     image = models.ImageField(null= True , blank=True) 
 
     def __str__(self):
@@ -85,7 +85,7 @@ class Type(models.Model):
 class Ambiance(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     images = models.ManyToManyField(Media, related_name='ambiance_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
     
@@ -122,8 +122,8 @@ class Revetement(models.Model):
 class FurnitureType(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True)
     images = models.ManyToManyField(Media, related_name='furniture_type_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
     
@@ -143,8 +143,6 @@ class FurnitureType(models.Model):
 class Furniture(models.Model):
     name = models.CharField(max_length=100)
     ref = models.CharField(max_length=50, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE)
     furniture_type = models.ForeignKey(FurnitureType, on_delete=models.CASCADE)
     images = models.ManyToManyField('Media', related_name='furniture_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
@@ -167,7 +165,7 @@ class Option(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
     images = models.ManyToManyField(Media, related_name='option_images', blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     image = models.ImageField(null= True , blank=True) 
     
 
@@ -210,13 +208,13 @@ class Order(models.Model):
     images = models.ManyToManyField(Media, related_name='order_images', blank=True)
     colors = models.ManyToManyField(Color, related_name='orders', blank=True)
 
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE)
-    ambiance = models.ForeignKey(Ambiance, on_delete=models.CASCADE)
-    revetment = models.ForeignKey(Revetement, on_delete=models.CASCADE)
-    furnitures = models.ManyToManyField(Furniture, related_name='orders')
-    options = models.ManyToManyField(Option, related_name='orders')
-    questions = models.ManyToManyField(Question, related_name='orders')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True)
+    ambiance = models.ForeignKey(Ambiance, on_delete=models.CASCADE, blank=True)
+    revetment = models.ForeignKey(Revetement, on_delete=models.CASCADE, blank=True)
+    furnitures = models.ManyToManyField(Furniture, related_name='orders', blank=True)
+    options = models.ManyToManyField(Option, related_name='orders', blank=True)
+    questions = models.ManyToManyField(Question, related_name='orders', blank=True)
 
     def save(self, *args, **kwargs):
         if not self.ref:
