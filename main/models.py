@@ -1,7 +1,52 @@
+import random
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from pathlib import Path
 
+from decouple import config
+import os
+from supabase import create_client, Client
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+from django.core.files.storage import default_storage
+
+
+url: str = config('SUPABASE_URL')
+key: str = config('SUPABASE_KEY')
+
+supabase: Client = create_client(url, key)
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# file_path = os.path.join(BASE_DIR, 'static', 'images', 'cover.jpg')
+# path_on_supastorage = 'images/image.jpg'
+# with open(file_path, 'rb') as f:
+#     image_data = f.read()
+
+# content_type = 'image/jpeg'  
+
+# bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+# bucket = supabase.storage.from_(bucket_name)
+
+# file_options = {"content-type": content_type}
+# upload_response = bucket.upload(file=image_data, path=path_on_supastorage, file_options=file_options)
+
+
+def upload_image_to_supabase(image, bucket_name, path_on_supastorage):
+    with open(image.path, 'rb') as f:
+        image_data = f.read()
+    bucket = supabase.storage.from_(bucket_name)
+    upload_response = bucket.upload(file=image_data, path=path_on_supastorage, file_options={"content-type": 'image/jpeg'})
+    return f"{url}/{bucket_name}/{path_on_supastorage}" if upload_response else None
+
+
+
+
+
+# with open(filepath, 'rb') as f:
+#     supabase.storage.from_("dzeko_image_bucket").upload(file=f,path=path_on_supastorage, file_options={"content-type": "audio/mpeg"})
 
 
 # Media: A model to store media-related information, including image URLs, description, and tags.
@@ -53,11 +98,22 @@ class Category(models.Model):
     image = models.ImageField(null= True , blank=True) 
     
     
+    
     def save(self, *args, **kwargs):
         if not self.ref:
             self.ref = slugify(self.name)[:50]  
 
         super().save(*args, **kwargs)
+        
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
+
 
     def __str__(self):
         return self.name
@@ -77,6 +133,16 @@ class Type(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
+
 
     def __str__(self):
         return self.name
@@ -95,6 +161,15 @@ class Ambiance(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
     def __str__(self):
         return self.name
@@ -114,6 +189,14 @@ class Revetement(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
     def __str__(self):
         return self.name
@@ -133,6 +216,14 @@ class FurnitureType(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
     def __str__(self):
         return self.name
@@ -155,6 +246,14 @@ class Furniture(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
     def __str__(self):
         return self.name
@@ -174,6 +273,14 @@ class Option(models.Model):
             self.ref = slugify(self.name)[:50]
 
         super().save(*args, **kwargs)
+        if self.image:
+            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
+            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            if public_url:
+                self.image = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
     def __str__(self):
         return self.name
