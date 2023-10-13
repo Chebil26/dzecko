@@ -21,7 +21,7 @@ supabase: Client = create_client(url, key)
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
 # file_path = os.path.join(BASE_DIR, 'static', 'images', 'cover.jpg')
-# path_on_supastorage = 'images/image.jpg'
+# path_on_supastorage = 'image.jpg'
 # with open(file_path, 'rb') as f:
 #     image_data = f.read()
 
@@ -34,12 +34,12 @@ supabase: Client = create_client(url, key)
 # upload_response = bucket.upload(file=image_data, path=path_on_supastorage, file_options=file_options)
 
 
-def upload_image_to_supabase(image, bucket_name, path_on_supastorage):
+def upload_image_to_supabase(image, path_on_supastorage, bucket_name='dzeko_server_images'):
     with open(image.path, 'rb') as f:
         image_data = f.read()
     bucket = supabase.storage.from_(bucket_name)
     upload_response = bucket.upload(file=image_data, path=path_on_supastorage, file_options={"content-type": 'image/jpeg'})
-    return f"{url}/{bucket_name}/{path_on_supastorage}" if upload_response else None
+    return f"{url}/storage/v1/object/public/{bucket_name}/{path_on_supastorage}" if upload_response else None
 
 
 
@@ -95,7 +95,9 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
-    image = models.ImageField(null= True , blank=True) 
+    image = models.ImageField(null= True , blank=True,max_length=300) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
+
     
     
     
@@ -106,11 +108,10 @@ class Category(models.Model):
         super().save(*args, **kwargs)
         
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(100, 999)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -126,6 +127,7 @@ class Type(models.Model):
     description = models.TextField()
     images = models.ManyToManyField(Media, related_name='type_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER)
     
 
     def save(self, *args, **kwargs):
@@ -135,11 +137,10 @@ class Type(models.Model):
         super().save(*args, **kwargs)
         
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -153,7 +154,8 @@ class Ambiance(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField(blank=True)
     images = models.ManyToManyField(Media, related_name='ambiance_images', blank=True)
-    image = models.ImageField(null= True , blank=True) 
+    image = models.ImageField(null= True , blank=True)
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
     
 
     def save(self, *args, **kwargs):
@@ -163,11 +165,10 @@ class Ambiance(models.Model):
         super().save(*args, **kwargs)
         
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -181,7 +182,8 @@ class Revetement(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
     images = models.ManyToManyField(Media, related_name='revetment_images', blank=True)
-    image = models.ImageField(null= True , blank=True) 
+    image = models.ImageField(null= True , blank=True)
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
     
 
     def save(self, *args, **kwargs):
@@ -190,11 +192,10 @@ class Revetement(models.Model):
 
         super().save(*args, **kwargs)
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -209,6 +210,7 @@ class FurnitureType(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True)
     images = models.ManyToManyField(Media, related_name='furniture_type_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER)
     
 
     def save(self, *args, **kwargs):
@@ -217,11 +219,10 @@ class FurnitureType(models.Model):
 
         super().save(*args, **kwargs)
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -236,7 +237,8 @@ class Furniture(models.Model):
     ref = models.CharField(max_length=50, blank=True)
     furniture_type = models.ForeignKey(FurnitureType, on_delete=models.CASCADE)
     images = models.ManyToManyField('Media', related_name='furniture_images', blank=True)
-    image = models.ImageField(null= True , blank=True) 
+    image = models.ImageField(null= True , blank=True)
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
     
     color = models.CharField(max_length=50)
     dimensions = models.CharField(max_length=50)
@@ -247,11 +249,10 @@ class Furniture(models.Model):
 
         super().save(*args, **kwargs)
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
@@ -265,7 +266,8 @@ class Option(models.Model):
     ref = models.CharField(max_length=50, unique=True, blank=True)
     images = models.ManyToManyField(Media, related_name='option_images', blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
-    image = models.ImageField(null= True , blank=True) 
+    image = models.ImageField(null= True , blank=True)
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
     
 
     def save(self, *args, **kwargs):
@@ -274,11 +276,10 @@ class Option(models.Model):
 
         super().save(*args, **kwargs)
         if self.image:
-            bucket_name = 'dzecko_image_bucket'  # Replace with your Supabase bucket name
-            path_on_supastorage = f'images/{self.ref}_image{random.randint(1, 99)}.jpg'
-            public_url = upload_image_to_supabase(self.image, bucket_name, path_on_supastorage)
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
-                self.image = public_url
+                self.image_url = public_url
                 super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
