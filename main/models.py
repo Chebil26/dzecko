@@ -72,7 +72,7 @@ def upload_image_to_supabase(image, path_on_supastorage, bucket_name='dzeko_serv
 # The usage of slugify to generate unique references is a good approach, and the relationships between the models seem appropriate based on the information provided.
 
 
-IMAGE_PLACEHOLDER = 'https://dlomnkdfvdzwzajbgpxu.supabase.co/storage/v1/object/sign/dzecko_image_bucket/gato.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkemVja29faW1hZ2VfYnVja2V0L2dhdG8uanBnIiwiaWF0IjoxNjk1ODI0MzkzLCJleHAiOjE3MjczNjAzOTN9.IIMx1Zg5Vbfniiecnx6SuXAK9UjnonxQcr9LENSEhRM&t=2023-09-27T14%3A19%3A48.828Z'
+IMAGE_PLACEHOLDER = 'https://dlomnkdfvdzwzajbgpxu.supabase.co/storage/v1/object/public/dzeko_server_images/images.jpg'
 
 class Media(models.Model):
     image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
