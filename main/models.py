@@ -125,6 +125,7 @@ class Type(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ref = models.CharField(max_length=50, unique=True, blank=True)
     description = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     images = models.ManyToManyField(Media, related_name='type_images', blank=True)
     image = models.ImageField(null= True , blank=True) 
     image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER)
