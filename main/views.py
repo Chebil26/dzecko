@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order
-from .serializers import MediaSerializer, ColorSerializer, CategorySerializer, TypeSerializer, AmbianceSerializer, RevetementSerializer, FurnitureTypeSerializer, FurnitureSerializer, OptionSerializer, QuestionSerializer, OrderSerializer
+from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette
+from .serializers import MediaSerializer, ColorSerializer, CategorySerializer, TypeSerializer, AmbianceSerializer, RevetementSerializer, FurnitureTypeSerializer, FurnitureSerializer, OptionSerializer, QuestionSerializer, OrderSerializer, PaletteSerializer
 
 @api_view(['GET'])
 def media_list(request):
@@ -26,6 +26,12 @@ def category_list(request):
 def type_list(request):
     types = Type.objects.all()
     serializer = TypeSerializer(types, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def palette_list(request):
+    types = Palette.objects.all()
+    serializer = PaletteSerializer(types, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

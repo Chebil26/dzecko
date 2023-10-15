@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order
+from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette
 
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +19,11 @@ class CategorySerializer(serializers.ModelSerializer):
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
+        fields = '__all__'
+        
+class PaletteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Palette
         fields = '__all__'
 
 class AmbianceSerializer(serializers.ModelSerializer):

@@ -149,6 +149,33 @@ class Type(models.Model):
     def __str__(self):
         return self.name
     
+class Palette(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    ref = models.CharField(max_length=50, unique=True, blank=True)
+    description = models.TextField()
+    image = models.ImageField(null= True , blank=True) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER)
+    
+    
+    def save(self, *args, **kwargs):
+        if not self.ref:
+            self.ref = slugify(self.name)[:50]
+
+        super().save(*args, **kwargs)
+        
+        if self.image:
+            path_on_supastorage = f'{self.ref}_image{random.randint(1, 99)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
+            if public_url:
+                self.image_url = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
+
+
+    def __str__(self):
+        return self.name
+    
+    
     
 class Ambiance(models.Model):
     name = models.CharField(max_length=100, unique=True)

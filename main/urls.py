@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (
     media_list, color_list, category_list, type_list,
     ambiance_list, revetement_list, furniture_type_list,
-    furniture_list, option_list, question_list, order_list
+    furniture_list, option_list, question_list, order_list,
+    palette_list,
 )
 
 
@@ -11,6 +12,7 @@ urlpatterns = [
     path('colors/', color_list, name='color-list'),
     path('categories/', category_list, name='category-list'),
     path('types/', type_list, name='type-list'),
+    path('palettes/', palette_list, name='palette-list'),
     path('ambiances/', ambiance_list, name='ambiance-list'),
     path('revetements/', revetement_list, name='revetement-list'),
     path('furniture_types/', furniture_type_list, name='furniture-type-list'),

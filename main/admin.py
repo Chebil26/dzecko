@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import Media, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order
+from .models import Media, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette
 
 admin.site.register(Media)
 admin.site.register(Category)
 admin.site.register(Type)
+admin.site.register(Palette)
 admin.site.register(Ambiance)
 admin.site.register(Revetement)
 admin.site.register(FurnitureType)
