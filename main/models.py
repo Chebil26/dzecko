@@ -99,7 +99,7 @@ class UserImage(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.ref:
-            self.ref = slugify(self.user.name)[:50]  
+            self.ref = slugify(f"{self.user.id} {self.user.username}")[:50]
 
         super().save(*args, **kwargs)
         
@@ -113,7 +113,7 @@ class UserImage(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return self.ref
 
    
 class Category(models.Model):
