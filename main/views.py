@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette
-from .serializers import MediaSerializer, ColorSerializer, CategorySerializer, TypeSerializer, AmbianceSerializer, RevetementSerializer, FurnitureTypeSerializer, FurnitureSerializer, OptionSerializer, QuestionSerializer, OrderSerializer, PaletteSerializer
+from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette, UserImage
+from .serializers import MediaSerializer, ColorSerializer, CategorySerializer, TypeSerializer, AmbianceSerializer, RevetementSerializer, FurnitureTypeSerializer, FurnitureSerializer, OptionSerializer, QuestionSerializer, OrderSerializer, PaletteSerializer, UserImageSerializer
 
 @api_view(['GET'])
 def media_list(request):
@@ -78,6 +78,21 @@ def order_list(request):
         return Response(serializer.data)
     elif request.method == 'POST':
         serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def user_image_list(request):
+    if request.method == 'GET':
+        user_images = UserImage.objects.all()
+        serializer = UserImageSerializer(user_images, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = UserImageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

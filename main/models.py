@@ -90,6 +90,31 @@ class Color(models.Model):
 
     def __str__(self):
         return self.name
+    
+class UserImage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ref = models.CharField(max_length=50, unique=True, blank=True)
+    image = models.ImageField(null= True , blank=True,max_length=300) 
+    image_url = models.URLField(max_length=500,null=True, blank=True, default=IMAGE_PLACEHOLDER) 
+
+    def save(self, *args, **kwargs):
+        if not self.ref:
+            self.ref = slugify(self.user.name)[:50]  
+
+        super().save(*args, **kwargs)
+        
+        if self.image:
+            path_on_supastorage = f'{self.ref}_image{random.randint(100, 999)}.jpg'
+            public_url = upload_image_to_supabase(self.image, path_on_supastorage)
+            if public_url:
+                self.image_url = public_url
+                super().save(*args, **kwargs)
+                print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
+
+
+    def __str__(self):
+        return self.name
+
    
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
