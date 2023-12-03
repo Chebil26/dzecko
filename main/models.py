@@ -104,11 +104,10 @@ class UserImage(models.Model):
         super().save(*args, **kwargs)
         
         if self.image:
-            path_on_supastorage = f'{self.ref}_image{random.randint(100, 999)}.jpg'
+            path_on_supastorage = f'{self.user.id} {self.user.username}/{self.ref}_image{random.randint(100, 999)}.jpg'
             public_url = upload_image_to_supabase(self.image, path_on_supastorage)
             if public_url:
                 self.image_url = public_url
-                super().save(*args, **kwargs)
                 print(f'Image uploaded successfully to Supabase. Public URL: {public_url}')
 
 
