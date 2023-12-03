@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 import os
@@ -38,8 +39,20 @@ INSTALLED_APPS = [
     
     "corsheaders",
     'rest_framework',
+    'rest_framework_simplejwt',
     'main',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

@@ -3,6 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Media, Color, Category, Type, Ambiance, Revetement, FurnitureType, Furniture, Option, Question, Order, Palette, UserImage
 from .serializers import MediaSerializer, ColorSerializer, CategorySerializer, TypeSerializer, AmbianceSerializer, RevetementSerializer, FurnitureTypeSerializer, FurnitureSerializer, OptionSerializer, QuestionSerializer, OrderSerializer, PaletteSerializer, UserImageSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
 
 @api_view(['GET'])
 def media_list(request):
@@ -97,3 +105,49 @@ def user_image_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+    
+    
+    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def user_login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access_token': str(refresh.access_token),
+            'refresh_token': str(refresh),
+        })
+    else:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def user_signup(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = User.objects.create_user(username=username, password=password)
+
+    refresh = RefreshToken.for_user(user)
+    return Response({
+        'access_token': str(refresh.access_token),
+        'refresh_token': str(refresh),
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_logout(request):
+    logout(request)
+    return Response({'message': 'Logout successful'})

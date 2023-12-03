@@ -3,7 +3,7 @@ from .views import (
     media_list, color_list, category_list, type_list,
     ambiance_list, revetement_list, furniture_type_list,
     furniture_list, option_list, question_list, order_list,
-    palette_list, user_image_list
+    palette_list, user_image_list, user_login, user_signup, user_logout    
 )
 
 
@@ -21,4 +21,9 @@ urlpatterns = [
     path('questions/', question_list, name='question-list'),
     path('orders/', order_list, name='order-list'),
     path('user-images/', user_image_list, name='user-image-list'),
+    
+    path('user/login/', user_login, name='user_login'),
+    path('user/signup/', user_signup, name='user_signup'),
+    path('user/logout/', user_logout, name='user_logout'),
+    
 ]
