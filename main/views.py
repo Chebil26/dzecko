@@ -112,7 +112,6 @@ def user_image_list(request):
     
     
 @api_view(['POST'])
-@permission_classes([AllowAny])
 def user_login(request):
     username = request.data.get('username')
     password = request.data.get('password')
@@ -123,6 +122,8 @@ def user_login(request):
         login(request, user)
         refresh = RefreshToken.for_user(user)
         return Response({
+            'success': True,
+            'message': 'Login successful',
             'access_token': str(refresh.access_token),
             'refresh_token': str(refresh),
         })
