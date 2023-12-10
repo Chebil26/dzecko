@@ -122,6 +122,7 @@ def user_login(request):
         login(request, user)
         refresh = RefreshToken.for_user(user)
         return Response({
+            'user_id': user.id,
             'success': True,
             'message': 'Login successful',
             'access_token': str(refresh.access_token),
