@@ -363,8 +363,8 @@ class Question(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ref = models.CharField(max_length=100, unique=True, blank=True)
-    description = models.TextField()
+    ref = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
     images = models.ManyToManyField(Media, related_name='order_images', blank=True)
     colors = models.ManyToManyField(Color, related_name='orders', blank=True)
 
