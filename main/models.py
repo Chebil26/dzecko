@@ -2,15 +2,10 @@ import random
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-from pathlib import Path
-
 from decouple import config
-import os
 from supabase import create_client, Client
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.conf import settings
-from django.core.files.storage import default_storage
+from django.contrib.postgres.fields import ArrayField
+
 
 
 url: str = config('SUPABASE_URL')
@@ -365,12 +360,12 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ref = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
-    images = models.ManyToManyField(Media, related_name='order_images', blank=True)
     colors = models.ManyToManyField(Color, related_name='orders', blank=True)
-
+    imageUrls = ArrayField(models.CharField(max_length=255), blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True)
     type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True)
     ambiance = models.ForeignKey(Ambiance, on_delete=models.CASCADE, blank=True)
+    palette = models.ForeignKey(Palette, on_delete=models.CASCADE, blank=True)
     revetment = models.ForeignKey(Revetement, on_delete=models.CASCADE, blank=True)
     furnitures = models.ManyToManyField(Furniture, related_name='orders', blank=True)
     options = models.ManyToManyField(Option, related_name='orders', blank=True)

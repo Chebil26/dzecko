@@ -123,6 +123,7 @@ def user_login(request):
         refresh = RefreshToken.for_user(user)
         return Response({
             'user_id': user.id,
+            'user_name': user.get_username(),
             'success': True,
             'message': 'Login successful',
             'access_token': str(refresh.access_token),
